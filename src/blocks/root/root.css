@@ -1,0 +1,8 @@
+.root {
+  margin: 0 auto;
+  max-width: 880px;
+  min-width: 320px;
+  color: white;
+  background-color: black;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}

@@ -1,0 +1,16 @@
+.login__signIn-button {
+  background: white;
+  width: 100%;
+  height: 50px;
+  padding: 0;
+  border-style: none;
+  cursor: pointer;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: black;
+  border-radius: 2px;
+  align-self: end;
+}

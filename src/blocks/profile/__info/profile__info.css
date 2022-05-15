@@ -1,0 +1,14 @@
+.profile__info {
+  flex: 1;
+  overflow: hidden;
+}
+
+
+@media screen and (max-width: 586px) {
+  .profile__info {
+    text-align: center;
+    margin-bottom: 36px;
+    margin-top: 26px;
+    width: 100%;
+  }
+}

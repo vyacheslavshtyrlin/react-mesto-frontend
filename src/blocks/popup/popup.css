@@ -1,0 +1,26 @@
+.popup {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(0, 0, 0, .5);
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.4s, opacity 0.4s linear;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+
+
+
+
+
+}
+
+@media screen and (max-width: 586px) {
+  .popup {
+    margin: 0 19px;
+  }
+}

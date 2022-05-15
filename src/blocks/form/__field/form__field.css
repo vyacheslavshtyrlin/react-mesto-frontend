@@ -1,0 +1,18 @@
+.form__field {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0,.2);
+  padding: 0;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 17px;
+  outline: none;
+  margin-top: 0;
+
+}
+
+.form__field:last-of-type {
+  margin-top: 2px;
+}
+
