@@ -3,7 +3,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-export default function Header({ userEmail, onExit }) {
+export default function Header({ userEmail, onSignOut }) {
   const path = useLocation();
   return (
     <header className="header">
@@ -11,7 +11,7 @@ export default function Header({ userEmail, onExit }) {
       {path.pathname === "/" && (
         <div className="header__container">
           <span className="header__email">{userEmail.email}</span>
-          <NavLink className="header__link" onClick={onExit} to="/sign-in">
+          <NavLink className="header__link" onClick={onSignOut} to="/sign-in">
             Выйти
           </NavLink>
         </div>

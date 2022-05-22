@@ -205,7 +205,7 @@ export default function App() {
 
   return (
     <currentUserContext.Provider value={currentUser}>
-      <Header onExit={handleExit} userEmail={userEmail} />
+      <Header onSignOut={handleExit} userEmail={userEmail} />
       <Switch>
         <ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
           <Main
