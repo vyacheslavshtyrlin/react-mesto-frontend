@@ -32,19 +32,23 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
+  console.log(isLoggedIn);
+
   let history = useHistory();
 
   React.useEffect(() => {
-    Promise.all([api.getData("users/me"), api.getData("cards")])
-      .then((data) => {
-        const [userData, cardData] = data;
-        setCurrentUser(userData);
-        setCurrentCards(cardData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (isLoggedIn) {
+      Promise.all([api.getData("users/me"), api.getData("cards")])
+        .then((data) => {
+          const [userData, cardData] = data;
+          setCurrentUser(userData);
+          setCurrentCards(cardData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [isLoggedIn]);
 
   const handleCardClick = (card) => {
     setIsImagePopupOpen(true);
@@ -157,18 +161,23 @@ export default function App() {
   };
 
   const handleRegistration = (password, email) => {
-    auth.register(password, email).then((res) => {
-      if (res) {
-        setSuccsess(true);
-        setInfoTool(true);
-        setMessage("Вы успешно зарегистрировались!");
-        history.push("/sign-in");
-      } else {
-        setInfoTool(true);
-        setSuccsess(false);
-        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
-      }
-    });
+    auth
+      .register(password, email)
+      .then((res) => {
+        if (res) {
+          setSuccsess(true);
+          setInfoTool(true);
+          setMessage("Вы успешно зарегистрировались!");
+          history.push("/sign-in");
+        } else {
+          setInfoTool(true);
+          setSuccsess(false);
+          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   React.useEffect(() => {
@@ -176,13 +185,22 @@ export default function App() {
   }, []);
 
   const handleLogin = (password, email) => {
-    auth.login(password, email).then((response) => {
-      console.log("auth:", response);
-      if (response) {
-        localStorage.setItem("jwt", response.token);
-        handleCheckToken();
-      }
-    });
+    auth
+      .login(password, email)
+      .then((response) => {
+        console.log("auth:", response);
+        if (response) {
+          localStorage.setItem("jwt", response.token);
+          handleCheckToken();
+        } else {
+          setInfoTool(true);
+          setSuccsess(false);
+          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleCheckToken = () => {
@@ -194,6 +212,9 @@ export default function App() {
         });
         setIsLoggedIn(true);
         history.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
       });
     }
   };
