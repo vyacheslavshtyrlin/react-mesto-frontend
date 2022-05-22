@@ -1,8 +1,9 @@
 import "../pages/index.css";
+import ProtectedRoute from "./ProtectedRoute";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import Login from "./Login"
+import Login from "./Login";
 import InfoTooltip from "./InfoTooltip";
 import Register from "./Register";
 import React, { useState } from "react";
@@ -13,8 +14,10 @@ import ImagePopup from "./ImagePopup.js";
 import { currentUserContext } from "../context/CurrentUserContext";
 import { api } from "../utils/Api";
 import PopupWithConfirm from "./PopupWithConfirm";
+import { Route, Switch, useHistory } from "react-router-dom";
+import * as auth from "../utils/auth";
 
-function App() {
+export default function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -23,6 +26,13 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [currentCards, setCurrentCards] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [infoTool, setInfoTool] = useState();
+  const [sucsess, setSuccsess] = useState(false);
+  const [message, setMessage] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
+  let history = useHistory();
 
   React.useEffect(() => {
     Promise.all([api.getData("users/me"), api.getData("cards")])
@@ -118,6 +128,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsImagePopupOpen(false);
     setIsConfirmPopupOpen(false);
+    setInfoTool(false);
     setSelectedCard({});
   };
 
@@ -145,49 +156,107 @@ function App() {
       });
   };
 
+  const handleRegistration = (password, email) => {
+    auth.register(password, email).then((res) => {
+      if (res) {
+        setSuccsess(true);
+        setInfoTool(true);
+        setMessage("Вы успешно зарегистрировались!");
+        history.push("/sign-in");
+      } else {
+        setInfoTool(true);
+        setSuccsess(false);
+        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    handleCheckToken();
+  }, []);
+
+  const handleLogin = (password, email) => {
+    auth.login(password, email).then((response) => {
+      console.log("auth:", response);
+      if (response) {
+        localStorage.setItem("jwt", response.token);
+        handleCheckToken();
+      }
+    });
+  };
+
+  const handleCheckToken = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth.checkToken(jwt).then((res) => {
+        setUserEmail({
+          email: res.data.email,
+        });
+        setIsLoggedIn(true);
+        history.push("/");
+      });
+    }
+  };
+
+  const handleExit = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("jwt");
+  };
+
   return (
     <currentUserContext.Provider value={currentUser}>
-      <div>
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={currentCards}
-          onCardLike={handleCardLike}
-          onCardDelete={handlePopupConfirmOpen}
-        />
-        <Footer />
-        <PopupWithEditAvatar
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        ></PopupWithEditAvatar>
-        <PopupWithEditProfile
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateProfile}
-        ></PopupWithEditProfile>
-        <PopupWithAddPlace
-          onAddPlace={handleAddPlaceSubmit}
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-        ></PopupWithAddPlace>
-        <ImagePopup
-          card={selectedCard}
-          isOpen={isImagePopupOpen}
-          onClose={closeAllPopups}
-        ></ImagePopup>
-        <PopupWithConfirm
-          isOpen={isConfirmPopupOpen}
-          onClose={closeAllPopups}
-          onSubmit={handleCardDelete}
-        ></PopupWithConfirm>
-        <InfoTooltip></InfoTooltip>
-      </div>
+      <Header onExit={handleExit} userEmail={userEmail} />
+      <Switch>
+        <ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
+          <Main
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={currentCards}
+            onCardLike={handleCardLike}
+            onCardDelete={handlePopupConfirmOpen}
+          />
+          <Footer />
+        </ProtectedRoute>
+        <Route path="/sign-in">
+          <Login onLogin={handleLogin}></Login>
+        </Route>
+        <Route path="/sign-up">
+          <Register onRegister={handleRegistration}></Register>
+        </Route>
+      </Switch>
+      <PopupWithEditAvatar
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+        onUpdateAvatar={handleUpdateAvatar}
+      ></PopupWithEditAvatar>
+      <PopupWithEditProfile
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateProfile}
+      ></PopupWithEditProfile>
+      <PopupWithAddPlace
+        onAddPlace={handleAddPlaceSubmit}
+        isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups}
+      ></PopupWithAddPlace>
+      <ImagePopup
+        card={selectedCard}
+        isOpen={isImagePopupOpen}
+        onClose={closeAllPopups}
+      ></ImagePopup>
+      <PopupWithConfirm
+        isOpen={isConfirmPopupOpen}
+        onClose={closeAllPopups}
+        onSubmit={handleCardDelete}
+      ></PopupWithConfirm>
+      <InfoTooltip
+        isOpen={infoTool}
+        onMessage={message}
+        onSuccsess={sucsess}
+        onClose={closeAllPopups}
+      ></InfoTooltip>
     </currentUserContext.Provider>
   );
 }
-
-export default App;
