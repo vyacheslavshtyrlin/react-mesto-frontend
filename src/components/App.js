@@ -27,12 +27,12 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [currentCards, setCurrentCards] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [infoTool, setInfoTool] = useState();
-  const [sucsess, setSuccsess] = useState(false);
-  const [message, setMessage] = useState("");
+  const [infoTool, setInfoTool] = useState({
+    isOpen: false,
+    sucsess: false,
+    message: "",
+  });
   const [userEmail, setUserEmail] = useState("");
-
-  console.log(isLoggedIn);
 
   let history = useHistory();
 
@@ -165,14 +165,18 @@ export default function App() {
       .register(password, email)
       .then((res) => {
         if (res) {
-          setSuccsess(true);
-          setInfoTool(true);
-          setMessage("Вы успешно зарегистрировались!");
+          setInfoTool({
+            isOpen: true,
+            sucsess: true,
+            message: "Вы успешно зарегистрировались!",
+          });
           history.push("/sign-in");
         } else {
-          setInfoTool(true);
-          setSuccsess(false);
-          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+          setInfoTool({
+            isOpen: true,
+            sucsess: false,
+            message: "Что-то пошло не так! Попробуйте ещё раз.",
+          });
         }
       })
       .catch((err) => {
@@ -193,9 +197,11 @@ export default function App() {
           localStorage.setItem("jwt", response.token);
           handleCheckToken();
         } else {
-          setInfoTool(true);
-          setSuccsess(false);
-          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+          setInfoTool({
+            isOpen: true,
+            sucsess: false,
+            message: "Что-то пошло не так! Попробуйте ещё раз.",
+          });
         }
       })
       .catch((err) => {
@@ -206,16 +212,18 @@ export default function App() {
   const handleCheckToken = () => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      auth.checkToken(jwt).then((res) => {
-        setUserEmail({
-          email: res.data.email,
+      auth
+        .checkToken(jwt)
+        .then((res) => {
+          setUserEmail({
+            email: res.data.email,
+          });
+          setIsLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        setIsLoggedIn(true);
-        history.push("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     }
   };
 
@@ -273,9 +281,9 @@ export default function App() {
         onSubmit={handleCardDelete}
       ></PopupWithConfirm>
       <InfoTooltip
-        isOpen={infoTool}
-        onMessage={message}
-        onSuccsess={sucsess}
+        isOpen={infoTool.isOpen}
+        onMessage={infoTool.message}
+        onSuccsess={infoTool.sucsess}
         onClose={closeAllPopups}
       ></InfoTooltip>
     </currentUserContext.Provider>
