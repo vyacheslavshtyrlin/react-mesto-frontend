@@ -11,7 +11,9 @@ export const register = (password, email) => {
     if (response.ok) {
       return response.json();
     }
-  });
+  }).catch((error) => {
+    console.log(error)
+  })
 };
 
 export const login = (password, email) => {
@@ -25,7 +27,9 @@ export const login = (password, email) => {
     if (response.ok) {
       return response.json();
     }
-  });
+  }).catch((error) => {
+    console.log(error)
+  })
 };
 
 export const checkToken = (token) => {
@@ -39,5 +43,7 @@ export const checkToken = (token) => {
     if (response.ok) {
       return response.json();
     }
-  });
+  }).catch((error) => {
+    console.log(error)
+  })
 };

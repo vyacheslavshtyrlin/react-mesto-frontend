@@ -30,10 +30,9 @@ export default function App() {
   const [infoTool, setInfoTool] = useState({
     isOpen: false,
     sucsess: false,
-    message: "",
+    message: '',
   });
   const [userEmail, setUserEmail] = useState("");
-
   let history = useHistory();
 
   React.useEffect(() => {
@@ -168,14 +167,14 @@ export default function App() {
           setInfoTool({
             isOpen: true,
             sucsess: true,
-            message: "Вы успешно зарегистрировались!",
+            message: 'Вы успешно зарегистрировались!',
           });
           history.push("/sign-in");
         } else {
           setInfoTool({
             isOpen: true,
             sucsess: false,
-            message: "Что-то пошло не так! Попробуйте ещё раз.",
+            message: 'Что-то пошло не так! Попробуйте ещё раз.',
           });
         }
       })
@@ -200,7 +199,7 @@ export default function App() {
           setInfoTool({
             isOpen: true,
             sucsess: false,
-            message: "Что-то пошло не так! Попробуйте ещё раз.",
+            message: 'Что-то пошло не так! Попробуйте ещё раз.',
           });
         }
       })
@@ -212,18 +211,16 @@ export default function App() {
   const handleCheckToken = () => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      auth
-        .checkToken(jwt)
-        .then((res) => {
-          setUserEmail({
-            email: res.data.email,
-          });
-          setIsLoggedIn(true);
-          history.push("/");
-        })
-        .catch((err) => {
-          console.log(err);
+      auth.checkToken(jwt).then((res) => {
+        setUserEmail({
+          email: res.data.email,
         });
+        setIsLoggedIn(true);
+        history.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
 
