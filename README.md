@@ -2,7 +2,7 @@
 
 **Готовая Работа**
 
-* [Ссылка](https://vyacheslavshtyrlin.github.io/mesto-react//)
+* [Ссылка](https://vyacheslavshtyrlin.github.io/react-mesto-auth/)
 
 ### Обзор
 
