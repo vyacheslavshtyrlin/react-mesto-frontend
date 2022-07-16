@@ -185,7 +185,7 @@ export default function App() {
 
     React.useEffect(() =>{
       handleCheckToken();
-    }, [token]);
+    }, []);
 
   const handleLogin = (password, email) => {
     auth
@@ -193,8 +193,7 @@ export default function App() {
       .then((response) => {
         console.log("auth:", response);
         if (response) {
-          const token = localStorage.setItem("jwt", response.token)
-          setToken(token);
+          setToken(localStorage.setItem("jwt", response.token));
           setIsLoggedIn(true);
           history.push("/");
             } else {
@@ -213,7 +212,7 @@ export default function App() {
 
 const handleCheckToken = () => {
   const jwt = localStorage.getItem("jwt");
-  if (token) {
+  if (jwt) {
     setIsLoggedIn(true);
     history.push("/");
     }
