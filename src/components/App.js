@@ -32,7 +32,7 @@ export default function App() {
     sucsess: false,
     message: '',
   });
-  const [userEmail, setUserEmail] = useState("");
+  const [token, setToken] = useState("");
   let history = useHistory();
 
   React.useEffect(() => {
@@ -185,7 +185,7 @@ export default function App() {
 
     React.useEffect(() =>{
       handleCheckToken();
-    }, []);
+    }, [token]);
 
   const handleLogin = (password, email) => {
     auth
@@ -193,7 +193,8 @@ export default function App() {
       .then((response) => {
         console.log("auth:", response);
         if (response) {
-          localStorage.setItem("jwt", response.token);
+          const token = localStorage.setItem("jwt", response.token)
+          setToken(token);
           setIsLoggedIn(true);
           history.push("/");
             } else {
@@ -212,7 +213,7 @@ export default function App() {
 
 const handleCheckToken = () => {
   const jwt = localStorage.getItem("jwt");
-  if (jwt) {
+  if (token) {
     setIsLoggedIn(true);
     history.push("/");
     }
