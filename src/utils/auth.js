@@ -1,4 +1,4 @@
-const API_URL = "http://api.vyacheslavshtyrlin.nomoredomains.xyz";
+const API_URL = "https://api.vyacheslavshtyrlin.nomoredomains.xyz";
 
 export const register = (password, email) => {
   return fetch(`${API_URL}/signup`, {
