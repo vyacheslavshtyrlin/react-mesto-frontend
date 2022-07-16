@@ -1,11 +1,13 @@
-const API_URL = "https://auth.nomoreparties.co";
+const API_URL = "http://api.vyacheslavshtyrlin.nomoredomains.xyz";
 
 export const register = (password, email) => {
   return fetch(`${API_URL}/signup`, {
     method: "POST",
+    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json; charset=utf-8'
     },
+
     body: JSON.stringify({ password: password, email: email }),
   }).then((response) => {
     if (response.ok) {
@@ -19,9 +21,11 @@ export const register = (password, email) => {
 export const login = (password, email) => {
   return fetch(`${API_URL}/signin`, {
     method: "POST",
+    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json; charset=utf-8'
     },
+
     body: JSON.stringify({ password, email }),
   }).then((response) => {
     if (response.ok) {

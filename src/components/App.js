@@ -40,7 +40,7 @@ export default function App() {
       Promise.all([api.getData("users/me"), api.getData("cards")])
         .then((data) => {
           const [userData, cardData] = data;
-          setCurrentUser(userData);
+          setCurrentUser(userData.user);
           setCurrentCards(cardData);
         })
         .catch((error) => {
@@ -60,7 +60,7 @@ export default function App() {
   };
 
   const handleCardLike = (card) => {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     if (!isLiked) {
       api
         .putLike(card._id)
@@ -183,9 +183,9 @@ export default function App() {
       });
   };
 
-  React.useEffect(() => {
-    handleCheckToken();
-  }, []);
+    React.useEffect(() =>{
+      handleCheckToken();
+    }, []);
 
   const handleLogin = (password, email) => {
     auth
@@ -194,8 +194,9 @@ export default function App() {
         console.log("auth:", response);
         if (response) {
           localStorage.setItem("jwt", response.token);
-          handleCheckToken();
-        } else {
+          setIsLoggedIn(true);
+          history.push("/");
+            } else {
           setInfoTool({
             isOpen: true,
             sucsess: false,
@@ -208,19 +209,12 @@ export default function App() {
       });
   };
 
-  const handleCheckToken = () => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth.checkToken(jwt).then((res) => {
-        setUserEmail({
-          email: res.data.email,
-        });
-        setIsLoggedIn(true);
-        history.push("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+const handleCheckToken = () => {
+  const jwt = localStorage.getItem("jwt");
+  if (jwt) {
+    setIsLoggedIn(true);
+    history.push("/");
     }
   };
 
@@ -228,10 +222,9 @@ export default function App() {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
   };
-
   return (
     <currentUserContext.Provider value={currentUser}>
-      <Header onSignOut={handleExit} userEmail={userEmail} />
+      <Header onSignOut={handleExit} />
       <Switch>
         <ProtectedRoute exact path="/" loggedIn={isLoggedIn}>
           <Main

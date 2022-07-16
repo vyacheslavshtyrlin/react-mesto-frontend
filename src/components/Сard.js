@@ -3,8 +3,9 @@ import React from "react";
 
 export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const userData = React.useContext(currentUserContext);
-  const isOwn = card.owner._id === userData._id;
-  const isLiked = card.likes.some((i) => i._id === userData._id);
+  const isOwn = card.owner === userData._id;
+  const isLiked = card.likes.some(id => id === userData._id);
+
 
   const cardDeleteButtonClassName = `card__remove-button${
     isOwn ? "" : "_disabled"
@@ -55,3 +56,4 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     </li>
   );
 }
+

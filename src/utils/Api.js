@@ -4,6 +4,7 @@ export default class API {
     this._url = url;
   }
 
+
   _checkStatus(promise) {
     return promise.then((res) => {
       if (res.ok) {
@@ -14,7 +15,7 @@ export default class API {
   }
 
   getData(patch) {
-    const promise = fetch(`${this._url}/${patch}`, {
+    const promise = fetch(`${this._url}${patch}`, {
       method: "GET",
       headers: {
         authorization: this._header,
@@ -96,9 +97,10 @@ export default class API {
     });
     return this._checkStatus(promise);
   }
+
 }
 
 export const api = new API(
-  "9e8587c5-8b4a-4c10-9dd7-1ae3fee22dd0",
-  "https://nomoreparties.co/v1/cohort-38/"
+  `Bearer ${localStorage.getItem("jwt")}`,
+  "https://api.vyacheslavshtyrlin.nomoredomains.xyz/"
 );
