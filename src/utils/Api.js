@@ -99,8 +99,3 @@ export default class API {
   }
 
 }
-
-export const api = new API(
-  `Bearer ${localStorage.getItem("jwt")}`,
-  "https://api.vyacheslavshtyrlin.nomoredomains.xyz/"
-);

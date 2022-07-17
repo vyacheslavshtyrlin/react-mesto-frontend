@@ -12,7 +12,7 @@ import PopupWithEditAvatar from "./PopupWithAvatarEdit.js";
 import PopupWithAddPlace from "./PopupWithAddPlace.js";
 import ImagePopup from "./ImagePopup.js";
 import { currentUserContext } from "../context/CurrentUserContext";
-import { api } from "../utils/Api";
+import API from '../utils/Api';
 import PopupWithConfirm from "./PopupWithConfirm";
 import { Route, Switch, useHistory } from "react-router-dom";
 import * as auth from "../utils/auth";
@@ -32,7 +32,7 @@ export default function App() {
     sucsess: false,
     message: '',
   });
-  const [token, setToken] = useState("");
+
   let history = useHistory();
 
   React.useEffect(() => {
@@ -193,9 +193,8 @@ export default function App() {
       .then((response) => {
         console.log("auth:", response);
         if (response) {
-          setToken(localStorage.setItem("jwt", response.token));
-          setIsLoggedIn(true);
-          history.push("/");
+          localStorage.setItem("jwt", response.token);
+          handleCheckToken();
             } else {
           setInfoTool({
             isOpen: true,
@@ -217,6 +216,11 @@ const handleCheckToken = () => {
     history.push("/");
     }
   };
+
+  const api = new API(
+    `Bearer ${localStorage.getItem("jwt")}`,
+    "https://api.vyacheslavshtyrlin.nomoredomains.xyz/"
+  );
 
   const handleExit = () => {
     setIsLoggedIn(false);
